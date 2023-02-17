@@ -1,0 +1,17 @@
+2.1
+在 2.8 节中提到一些基本系统数据类型可以在多个头文件中定义。例如，在 FreeBSD 8.0 中，size_t 在29 个不同的头文件中都有定义。由于一个程序可能包含这 29 个不同的头文件，但是 ISO C 却不允许对同一个名字进行多次 typedef ，那么如何编写这些头文件呢？
+使用宏定义保护。
+
+#ifndef _MACHINE_TYPES_H_
+#define _MACHINE_TYPES_H_
+
+typedef int _int32_t;
+typedef unsigned int _uint32_t;
+
+.........
+
+typedef _uint32_t _size_t;
+
+.........
+
+#endif
