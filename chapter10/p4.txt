@@ -1,0 +1,9 @@
+图 10-11 程序中利用 setjmp 和 longjmp 设置 I/O 操作的超时，下面的代码也常见用于侧重目的：
+
+signal(SIGALRM, sig_alrm);
+alarm(60);
+if (setjmp(env_alrm) != 0) {
+    /* handle timeout */
+}
+这段代码有什么错误？
+在第一次调用 alarm 和 setjmp 之间有一次竞争条件。如果进程在调用 alarm 和 setjmp 之间被内核阻塞了，闹钟时间超过后就调用信号处理程序，然后调用 longjmp 。但是由于没有调用过 setjmp ，所以没有设置 env_alrm 缓冲区。如果 longjmp 的跳转缓冲区没有被 setjmp 初始化，则说明 longjmp 的操作是未定义的。
